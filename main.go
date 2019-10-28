@@ -42,6 +42,14 @@ var (
 		`Optional, if this controller is running in a kubernetes cluster, use the
 		pod secrets for creating a Kubernetes client.`,
 	)
+	eventKindNormal = flags.String(
+		"event-kind-collect-normal", "all",
+		"when collect normal event, only collect specific event kind, default collect all",
+	)
+	eventKindWarning = flags.String(
+		"event-kind-collect-warning", "all",
+		"when collect warning event, only collect specific event kind, default collect all",
+	)
 )
 
 var landingPage = []byte(`<html>

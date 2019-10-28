@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -144,10 +145,17 @@ func (es *EventStore) Scrap(ch chan<- prometheus.Metric) error {
 	err = nil
 	for key, isHappening := range es.backoff.AllKeysStateSinceUpdate(time.Now()) {
 		obj, exists, err := es.eventStore.GetByKey(key)
+		isCollectNormal, _ := regexp.MatchString(obj.(*api.Event).Type, *eventKindNormal)
+		isCollectWarning, _ := regexp.MatchString(obj.(*api.Event).Type, *eventKindWarning)
+
 		if err != nil {
 			continue
 		} else if !exists {
 			err = fmt.Errorf("event not found: %s", key)
+			continue
+		} else if obj.(*api.Event).Type == "Normal" && !isCollectNormal {
+			continue
+		} else if obj.(*api.Event).Type == "Warning" && !isCollectWarning {
 			continue
 		}
 		event := obj.(*api.Event)
