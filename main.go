@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 	"os"
 	"time"
@@ -106,7 +107,7 @@ func main() {
 	log.Infoln("Starting event_exporter", version.Info())
 	log.Infoln("Build context", version.BuildContext())
 
-	http.Handle(*metricPath, prometheus.Handler())
+	http.Handle(*metricPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write(landingPage)
 	})

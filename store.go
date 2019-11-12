@@ -145,8 +145,8 @@ func (es *EventStore) Scrap(ch chan<- prometheus.Metric) error {
 	err = nil
 	for key, isHappening := range es.backoff.AllKeysStateSinceUpdate(time.Now()) {
 		obj, exists, err := es.eventStore.GetByKey(key)
-		isCollectNormal, _ := regexp.MatchString(obj.(*api.Event).Type + "(,|$)", *eventKindNormal)
-		isCollectWarning, _ := regexp.MatchString(obj.(*api.Event).Type + "(,|$)", *eventKindWarning)
+		isCollectNormal, _ := regexp.MatchString(obj.(*api.Event).InvolvedObject.Kind + "(,|$)", *eventKindNormal)
+		isCollectWarning, _ := regexp.MatchString(obj.(*api.Event).InvolvedObject.Kind + "(,|$)", *eventKindWarning)
 
 		if err != nil {
 			continue
